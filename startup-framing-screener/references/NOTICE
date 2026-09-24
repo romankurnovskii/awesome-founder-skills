@@ -1,0 +1,26 @@
+awesome-founder-skills
+
+Copyright (c) 2026 Roman Kurnovskii
+
+This repository contains an independent implementation of a method described in:
+
+    Saruggia, A. M. G., & Germano, S. (2026).
+    "Predicting Startup Exit from Textual Descriptors:
+     A Computational Linguistics Framework."
+    arXiv:2608.00045
+    https://arxiv.org/abs/2608.00045
+    DOI: 10.48550/arXiv.2608.00045
+
+The thresholds, Exit Ratios, Exit Deltas, feature-importance weights, and the
+Hyping Score formula restated in startup-framing-screener/references/ are
+published results of that study. They are cited here as facts.
+
+This repository is NOT the authors' software and is not endorsed by them.
+
+The marker dictionaries in
+startup-framing-screener/references/hyping-markers.md are an independent
+reconstruction. The cited study does not publish its dictionaries.
+
+No text, figure, or table from the paper is reproduced verbatim.
+
+Source code in this repository is licensed under the MIT License; see LICENSE.

@@ -1,0 +1,16 @@
+# Dependencies (Biome, husky, lint-staged)
+node_modules/
+
+# Python bytecode and tool caches
+__pycache__/
+*.py[cod]
+.ruff_cache/
+
+# Skill script logs
+.logs/
+*.log
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/

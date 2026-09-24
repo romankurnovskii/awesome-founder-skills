@@ -1,0 +1,24 @@
+{
+  "name": "awesome-founder-skills",
+  "version": "1.0.0",
+  "description": "Repo tooling for awesome-founder-skills. Not a published package; this only wires up commit hooks, Biome for JSON, and Ruff for the Python skill scripts.",
+  "private": true,
+  "author": "Roman Kurnovskii <r.kurnovskii@gmail.com> (https://romankurnovskii.com/)",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky",
+    "format": "pnpm run format:biome && pnpm run format:py",
+    "format:biome": "biome check --write .",
+    "format:py": "ruff check . --fix && ruff format .",
+    "lint": "biome check . && ruff check . && ruff format --check ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.0"
+  },
+  "lint-staged": {
+    "*.py": ["ruff check --fix", "ruff format"],
+    "*.{ts,tsx,js,jsx,json,jsonc}": ["biome check --write --no-errors-on-unmatched"]
+  }
+}

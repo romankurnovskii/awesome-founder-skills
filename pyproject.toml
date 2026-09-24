@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 150
+target-version = "py314" 
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"] 
+ignore = []
+
+[tool.ruff.format]
+quote-style = "single"
