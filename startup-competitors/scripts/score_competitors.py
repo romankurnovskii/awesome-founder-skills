@@ -1,0 +1,1 @@
+score_competitors.v2.py

@@ -1,0 +1,10 @@
+# Execution logs
+.logs/
+*.log
+
+# Temporary working data (intermediate JSONs, cache files)
+data/
+
+# Python caches
+__pycache__/
+*.pyc
