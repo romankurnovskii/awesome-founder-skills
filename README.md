@@ -23,3 +23,11 @@ The caveats matter as much as the method, so they are stated up front:
 - **Not investment advice.**
 
 If you use this in academic work, cite the paper for the methodology and this repository only for the implementation. Full citation, licensing, and redistribution duties: [`references/attribution.md`](startup-framing-screener/references/attribution.md).
+
+### [`startup-competitors`](startup-competitors)
+
+Conducts investment-grade competitive intelligence and verification under a Radical Honesty protocol. Maps competitor universes (direct, indirect, substitutes, incumbents, adjacent), reverse-engineers pricing, mines customer sentiment, analyzes GTM signals, triangulates claims across 4 source tiers, and generates 1-page battlecards with explicit "when they win over you" assessments.
+
+### [`startup-landing-screener`](startup-landing-screener)
+
+Audits a startup website or landing page against acceptance criteria before public launch, specifically screening against the **30 Vibe-Coded AI Startup Anti-Patterns**. Evaluates copy, layout, product reality, social proof, commercial clarity, and market differentiation to determine an objective Launch Gate Verdict (`🟢 READY TO PUSH`, `🟡 NEEDS WORK`, or `🔴 BLOCKED`). Produces a complete 30-criteria comparison matrix and actionable before-and-after remediation suggestions for every flagged item.
