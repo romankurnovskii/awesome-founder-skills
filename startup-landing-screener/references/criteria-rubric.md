@@ -1,8 +1,12 @@
-# 30 Vibe-Coded Acceptance Criteria & Remediation Rubric
+# Startup Landing Screener: Comprehensive Criteria Rubric
 
-Comprehensive criteria reference for screening startup landing pages. Each criterion defines the red flag to avoid, detection heuristics, impact on conversion/credibility, failure/pass examples, and actionable suggestions.
+Comprehensive reference for auditing startup websites and landing pages across two essential tracks:
+1. **Track 1: 30 Vibe-Coded Anti-Patterns (What to Avoid / Red Flags)** — Narrative, visual, trust, and positioning signals that reveal generic wrappers or vaporware.
+2. **Track 2: 20 Web QA Acceptance Criteria (What to Verify & Have / Must-Haves)** — Functional, technical, responsive, and pre-flight hygiene criteria that ensure production readiness.
 
 ---
+
+# Track 1: 30 Vibe-Coded Anti-Patterns (What to Avoid / Red Flags)
 
 ## Dimension 1: Copywriting & Value Proposition
 
@@ -384,3 +388,267 @@ Comprehensive criteria reference for screening startup landing pages. Each crite
 - **Pass Example**: Memorable visual identity, opinionated founder voice, custom typography, authentic product snapshots, and zero generic buzzwords.
 - **Suggestion**:
   - Conduct the "Logo Swap Test": If you paste a competitor's logo on your page, does it still make sense? If yes, strip the generic components and inject domain-specific substance.
+
+---
+
+# Track 2: 20 Web QA Acceptance Criteria (What to Verify & Have / Must-Haves)
+
+Comprehensive functional and technical pre-flight criteria that every production-grade website or landing page must pass before public launch.
+
+---
+
+## Dimension 7: Viewport & Mobile Responsiveness
+
+### AC-01. Remove Horizontal Scrolling
+- **Category**: Viewport & Mobile Responsiveness
+- **Severity**: Critical
+- **Acceptance Rule**: The page must have zero unintended horizontal scrolling at any viewport width (375px mobile through 2560px ultra-wide).
+- **Detection Signals**: `document.documentElement.scrollWidth > window.innerWidth`, unconstrained `width: 100vw` with vertical scrollbars, fixed pixel widths exceeding 360px on inner containers, or missing `overflow-x: clip / hidden` on the root container.
+- **Fail Example**: Viewing the hero section on an iPhone 13 causes the entire page to pan 30px horizontally, revealing blank white margins.
+- **Pass Example**: Layout is strictly bounded: all rows wrap smoothly, media uses `max-width: 100%`, and touch-dragging horizontally does not wobble the viewport.
+- **Suggestion**:
+  - Add `overflow-x: hidden` (or modern `overflow-x: clip`) to `html, body`.
+  - Inspect elements exceeding 100% parent width using browser devtools: `$$('*').filter(el => el.scrollWidth > document.documentElement.clientWidth)`.
+
+---
+
+### AC-02. Fix Mobile Overflow
+- **Category**: Viewport & Mobile Responsiveness
+- **Severity**: Critical
+- **Acceptance Rule**: Text blocks, wide data tables, code snippets, pre elements, and oversized SVG/images must never clip or bleed outside screen boundaries on mobile devices.
+- **Detection Signals**: Unwrapped `<table>` elements with fixed column widths, un-wrapped `<pre>` or `<code>` blocks without `overflow-x: auto`, absolute-positioned floating badges overflowing parent boundaries on small viewports.
+- **Fail Example**: A code snippet in the feature breakdown section pushes the container 200px off the right edge of a 390px smartphone display.
+- **Pass Example**: Code blocks and tables are wrapped in dedicated horizontally-scrollable containers (`overflow-x: auto; -webkit-overflow-scrolling: touch;`) while the parent page maintains rigid 100% viewport width.
+- **Suggestion**:
+  - Set `max-width: 100%; word-break: break-word;` on text containers.
+  - Wrap tables and code blocks in `<div class="overflow-x-auto w-full">`.
+
+---
+
+### AC-03. Make Every Page Mobile-Optimized
+- **Category**: Viewport & Mobile Responsiveness
+- **Severity**: Critical
+- **Acceptance Rule**: Every public page (home, pricing, docs, blog, legal) must be fully responsive, with tap targets $\ge 44 \times 44\text{px}$, legible font sizes ($\ge 16\text{px}$ base body), and proper viewport meta tags.
+- **Detection Signals**: Missing `<meta name="viewport" content="width=device-width, initial-scale=1">`, body text shrinking to micro-scale requiring pinch-to-zoom, tap targets spaced closer than 8px apart.
+- **Fail Example**: Pricing table renders as an unreadable miniature desktop spreadsheet on mobile screens, forcing users to pinch-zoom to read tier limits.
+- **Pass Example**: Responsive CSS grid/flexbox stacks pricing cards vertically on screens $< 768\text{px}$, with large primary CTA buttons spanning full mobile width.
+- **Suggestion**:
+  - Verify `<meta name="viewport" content="width=device-width, initial-scale=1.0">` is present in `<head>`.
+  - Test all pages at 375px, 414px, 768px, 1024px, and 1440px viewports. Ensure font sizes never drop below 14px on mobile.
+
+---
+
+### AC-04. Add a Mobile Menu
+- **Category**: Viewport & Mobile Responsiveness
+- **Severity**: Major
+- **Acceptance Rule**: Viewports under 768px/1024px must offer a clean, functional mobile navigation drawer, hamburger sheet, or sticky bottom bar rather than wrapping 6+ desktop links across three lines.
+- **Detection Signals**: Desktop navigation links wrapping into chaotic multi-line headers, hamburger icon that fails to open on touch/click, missing close button/overlay dismissal, or mobile menu trapping tab focus without escape.
+- **Fail Example**: Header links (Features, Pricing, Docs, About, Blog, Sign In, Get Started) crowd the mobile hero, pushing the main value proposition below the fold.
+- **Pass Example**: Clean hamburger icon reveals an accessible animated slide-over drawer with clear hierarchy, large tap targets, and an active close/escape trigger.
+- **Suggestion**:
+  - Implement a mobile dialog/drawer triggered by a hamburger button when viewport $< 768\text{px}$.
+  - Ensure tapping outside the drawer, clicking a destination link, or pressing `Esc` immediately closes the menu.
+
+---
+
+## Dimension 8: Navigation & Link Integrity
+
+### AC-05. Find Broken Links
+- **Category**: Navigation & Link Integrity
+- **Severity**: Critical
+- **Acceptance Rule**: Zero dead, orphaned, or 404 links across both internal routes and outbound external resources.
+- **Detection Signals**: Anchors with `href="#"`, `href=""`, links pointing to non-existent subpaths (e.g. `/features/v2` returning 404), or dead external links (e.g. invalid GitHub/Twitter handles).
+- **Fail Example**: Clicking "Read Docs" in the navigation returns a browser `404 Not Found` error.
+- **Pass Example**: All internal links resolve with HTTP 200, and external links resolve to active live endpoints with `target="_blank" rel="noopener noreferrer"`.
+- **Suggestion**:
+  - Run an automated link crawler: verify every `<a>` tag returns HTTP 200 or 301/302.
+  - Ban placeholder `href="#"` or replace with functional modal triggers or valid target anchors.
+
+---
+
+### AC-06. Fix Footer Links
+- **Category**: Navigation & Link Integrity
+- **Severity**: Major
+- **Acceptance Rule**: Every link listed in the footer—especially Privacy Policy, Terms of Service, Security, Status, Docs, and Contact—must resolve to a genuine, published destination.
+- **Detection Signals**: Footer columns populated with generic template links (e.g. "Careers", "Press Kit", "Privacy") all pointing to `href="#"` or throwing 404s.
+- **Fail Example**: Clicking "Privacy Policy" in the footer reloads the top of the homepage because `href="#"`.
+- **Pass Example**: Dedicated, complete `/privacy`, `/terms`, and `/security` pages written or generated with real company details.
+- **Suggestion**:
+  - Either create valid minimal legal pages or delete unpopulated footer links. Never launch with dummy `#` links in the footer.
+
+---
+
+### AC-07. Make the Logo Clickable
+- **Category**: Navigation & Link Integrity
+- **Severity**: Minor
+- **Acceptance Rule**: The primary logo or brand icon located in the site header must be wrapped in a functional link directing users back to the root (`/`) homepage.
+- **Detection Signals**: Logo rendered as an inert `<img>`, `<svg>`, or `<span>` without an enclosing `<a href="/">` anchor tag.
+- **Fail Example**: User navigates to `/pricing`, clicks the brand logo expecting to return home, but nothing happens.
+- **Pass Example**: `<a href="/" aria-label="Acme Home" class="flex items-center gap-2"><img src="/logo.svg" alt="Acme Logo" /></a>`.
+- **Suggestion**:
+  - Wrap the header logo element in `<a href="/" aria-label="[Brand] Home">`.
+
+---
+
+### AC-08. Fix Broken Buttons
+- **Category**: Navigation & Link Integrity
+- **Severity**: Critical
+- **Acceptance Rule**: Every button or button-styled element must perform an active, observable function (submit form, open modal, trigger checkout, copy code, or navigate to a destination).
+- **Detection Signals**: `<button>` tags without `onClick` handlers, empty `<button></button>` containers, or anchor tags styled as buttons that lack an `href`.
+- **Fail Example**: User clicks the prominent "Start Free Trial" button in the hero section and nothing happens.
+- **Pass Example**: "Start Free Trial" immediately redirects to `/signup` or opens a focused onboarding modal with autofocus on the email input.
+- **Suggestion**:
+  - Audit all `<button>` and `.btn` classes: ensure each has a wired `type="submit"`, valid `href`, or active click listener with visual feedback.
+
+---
+
+### AC-09. Remove Unused Navigation
+- **Category**: Navigation & Link Integrity
+- **Severity**: Minor
+- **Acceptance Rule**: Strip all placeholder, empty, or unmaintained navigation tabs (e.g., "Blog", "Community", "Changelog" when no content exists).
+- **Detection Signals**: Navigation items leading to empty "Coming Soon" stubs, disabled dropdown menus with zero items, or redundant multiple links pointing to the same section.
+- **Fail Example**: Top navigation includes "Blog", which links to a blank page containing 1 sample post from 6 months ago titled "Hello World".
+- **Pass Example**: Streamlined navigation containing only active, essential links: Product, Pricing, Docs, and Sign In.
+- **Suggestion**:
+  - Prune pre-launch navigation down to the bare essentials: 3–4 high-intent links only.
+
+---
+
+## Dimension 9: Metadata, SEO & Brand Basics
+
+### AC-10. Fix Page Titles
+- **Category**: Metadata, SEO & Brand Basics
+- **Severity**: Major
+- **Acceptance Rule**: Every page must have a distinct, descriptive, branded `<title>` tag (50–60 characters) stating the product name and primary value proposition.
+- **Detection Signals**: Default framework titles like `<title>Vite + React</title>`, `<title>Create Next App</title>`, `<title>Untitled Document</title>`, or generic `<title>Home</title>`.
+- **Fail Example**: Browser tab displays: *"Vite + React + TS"* or *"Home - My Web Project"*.
+- **Pass Example**: `<title>CloudCut — Deterministic AWS Cost Reduction & Anomaly Alerts</title>`.
+- **Suggestion**:
+  - Set specific page titles following the pattern: `[Product Name] — [Primary Value Proposition / Action]`.
+
+---
+
+### AC-11. Add Meta Descriptions
+- **Category**: Metadata, SEO & Brand Basics
+- **Severity**: Major
+- **Acceptance Rule**: Provide an enticing, concise `<meta name="description">` (120–160 characters) and OpenGraph/Twitter card tags (`og:title`, `og:image`, `og:description`) so links unfurl attractively on Slack, X/Twitter, and LinkedIn.
+- **Detection Signals**: Missing `<meta name="description">`, default boilerplate descriptions (*"Generated by create next app"*), or missing `og:image`.
+- **Fail Example**: Sharing the URL in a Slack channel or tweet produces a blank grey card with no preview image and text reading *"Web site created using create-react-app"*.
+- **Pass Example**: Sharing produces a high-res 1200x630px branded preview card highlighting the product screenshot and a 140-character summary.
+- **Suggestion**:
+  - Add `<meta name="description" content="...">`.
+  - Add `<meta property="og:image" content="https://domain.com/og-image.png">` with a custom 1200x630 graphic.
+
+---
+
+### AC-12. Add a Favicon
+- **Category**: Metadata, SEO & Brand Basics
+- **Severity**: Minor
+- **Acceptance Rule**: Include a custom brand favicon in SVG/PNG/ICO formats with high-resolution Apple touch icons to prevent default browser globe icons or framework logos.
+- **Detection Signals**: Default Vercel triangle, Vite lightning bolt, Create-React-App atom, or browser console 404 for `/favicon.ico`.
+- **Fail Example**: Browser tab shows the default Vercel or React spinning atom icon.
+- **Pass Example**: Custom SVG/ICO favicon matching the brand mark, supported by `<link rel="icon" href="/favicon.svg" type="image/svg+xml">`.
+- **Suggestion**:
+  - Generate a 32x32 `.ico`, 192x192 `.png`, and SVG vector icon. Place `favicon.ico` in the web root.
+
+---
+
+### AC-13. Add a Custom 404 Page
+- **Category**: Metadata, SEO & Brand Basics
+- **Severity**: Minor
+- **Acceptance Rule**: A branded 404 page that maintains site styling, explains the missing route, and provides an immediate CTA back to the homepage or documentation.
+- **Detection Signals**: Default Nginx 404, Apache error, raw JSON `{ "statusCode": 404, "message": "Not Found" }`, or blank unstyled text.
+- **Fail Example**: Mistyping a URL path shows a terrifying stark white Nginx default error screen: *"404 Not Found - nginx/1.18.0"*.
+- **Pass Example**: Clean page displaying *"Page not found. The link might be outdated or mistyped."* with a prominent "Return to Homepage" button.
+- **Suggestion**:
+  - Implement a custom `404.html` (or `not-found.tsx` in Next.js / Astro) containing the site header, footer, and a prominent "Return Home" button.
+
+---
+
+### AC-14. Fix the Copyright Year
+- **Category**: Metadata, SEO & Brand Basics
+- **Severity**: Minor
+- **Acceptance Rule**: The copyright notice in the footer must display the current calendar year.
+- **Detection Signals**: Outdated hardcoded years (e.g., `© 2021` or `© 2023`), or missing copyright line.
+- **Fail Example**: Footer displays: *"© 2022 Acme Inc. All rights reserved."* on a site launching in 2026.
+- **Pass Example**: *"© 2026 Acme Corp. All rights reserved."* or dynamically computed `© {new Date().getFullYear()} Acme Corp.`
+- **Suggestion**:
+  - Replace hardcoded static years with dynamic `{new Date().getFullYear()}` or manually update to current calendar year.
+
+---
+
+## Dimension 10: Contact & Lead Conversions
+
+### AC-15. Make the Phone Number Clickable
+- **Category**: Contact & Lead Conversions
+- **Severity**: Minor
+- **Acceptance Rule**: Whenever a customer phone number is displayed on the site, wrap it in a proper `tel:` URI scheme so mobile visitors can tap to call instantly.
+- **Detection Signals**: Raw plain-text phone numbers (e.g. `+1 (555) 019-2834`) without an `<a href="tel:+15550192834">` wrapper.
+- **Fail Example**: Mobile visitor sees a sales phone number but cannot tap it; must manually copy, switch apps, and paste into phone dialer.
+- **Pass Example**: `<a href="tel:+15550192834" class="underline">+1 (555) 019-2834</a>`.
+- **Suggestion**:
+  - Wrap any visible telephone string in `<a href="tel:+[country_code][number]">`.
+
+---
+
+### AC-16. Make the Email Clickable
+- **Category**: Contact & Lead Conversions
+- **Severity**: Minor
+- **Acceptance Rule**: Whenever a contact, support, or founder email address is displayed, wrap it in an accessible `mailto:` hyperlink.
+- **Detection Signals**: Unlinked plain-text email strings (e.g., `team@acme.ai`) or email addresses wrapped in dead `href="#"`.
+- **Fail Example**: Visitor reads: *"For custom deployment, email us at sales@company.com"*, but clicking does nothing.
+- **Pass Example**: `<a href="mailto:sales@company.com" class="hover:underline">sales@company.com</a>`.
+- **Suggestion**:
+  - Wrap all contact emails in `<a href="mailto:address@domain.com">`.
+
+---
+
+### AC-17. Add Success Messages
+- **Category**: Contact & Lead Conversions
+- **Severity**: Major
+- **Acceptance Rule**: When a visitor submits a contact form, waitlist, or newsletter input, the interface must immediately display a reassuring, high-contrast success state.
+- **Detection Signals**: Form button freezes indefinitely without feedback, page refreshes to blank state without confirmation, or submission logs to console only.
+- **Fail Example**: User enters their email for the beta waitlist, clicks "Join", the button returns to default state, and the user has no idea if the submission succeeded.
+- **Pass Example**: Form smoothly transitions to: *"🎉 You're on the list! Check your inbox for confirmation. We onboard 25 new teams every Tuesday."*
+- **Suggestion**:
+  - Wire a clear, affirmative success state banner/modal that explains what happens next (e.g. *"Check your email for invite link"*).
+
+---
+
+### AC-18. Add Error Messages
+- **Category**: Contact & Lead Conversions
+- **Severity**: Major
+- **Acceptance Rule**: If form validation fails or a network request errors out, display explicit, user-friendly inline error messages indicating exactly what went wrong and how to correct it.
+- **Detection Signals**: Silent failures where the user clicks submit and nothing happens, or generic unhelpful alerts like *"Error: Request failed with status code 500"*.
+- **Fail Example**: User enters an invalid email format; the form quietly blocks submission without highlighting the email field or explaining the error.
+- **Pass Example**: Red outline on the email field with helper text: *"Please enter a valid work email address (e.g. name@company.com)."*
+- **Suggestion**:
+  - Provide client-side validation for email formats and required fields before submission.
+  - Display accessible error notices above or inline with inputs.
+
+---
+
+## Dimension 11: Content Hygiene & Performance
+
+### AC-19. Remove Placeholder Text
+- **Category**: Content Hygiene & Performance
+- **Severity**: Critical
+- **Acceptance Rule**: Total absence of dummy placeholder copy, Latin filler, developer notes, or unfinished template tokens.
+- **Detection Signals**: Matches for *"Lorem Ipsum"*, *"dolor sit amet"*, *"TODO"*, *"TBD"*, *"Insert headline here"*, *"Company Name"*, *"John Doe"*.
+- **Fail Example**: Subheadline of a feature card reads: *"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt."*
+- **Pass Example**: Every sentence is finished, edited, and conveys authentic product value.
+- **Suggestion**:
+  - Perform a global case-insensitive search across all codebase templates for `lorem`, `ipsum`, `todo`, `tbd`, and `insert`.
+
+---
+
+### AC-20. Compress Images
+- **Category**: Content Hygiene & Performance
+- **Severity**: Major
+- **Acceptance Rule**: All hero images, screenshots, and visual assets must be compressed, sized appropriately, and preferably served in modern formats (WebP or AVIF) under 250KB per image.
+- **Detection Signals**: Raw uncompressed PNG/JPEG files exceeding 1.5MB in size, full 4K screenshots scaled down to 400px width with CSS, missing `loading="lazy"` on below-the-fold assets.
+- **Fail Example**: Hero background loads a 6.2MB uncompressed PNG, causing a noticeable 3-second blank white flash on 4G connections (LCP > 4.5s).
+- **Pass Example**: Hero screenshot is a 140KB WebP image with explicit `width="1200" height="675"` and `<link rel="preload">` priority.
+- **Suggestion**:
+  - Convert images to WebP/AVIF via `squoosh`, `sharp`, or ImageMagick.
+  - Add `loading="lazy"` and `decoding="async"` to all below-the-fold images.
