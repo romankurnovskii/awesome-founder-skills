@@ -13,7 +13,7 @@
     "lint": "biome check . && ruff check . && ruff format --check ."
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
+    "@biomejs/biome": "^2.5.15",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0"
   },
